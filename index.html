@@ -198,6 +198,19 @@ function renderLogs(){
     const logPanel = document.getElementById("logPanel");
     logPanel.innerHTML = "";
 
+    labState.logs.forEach(l => {
+
+        const div = document.createElement("div");
+        div.className = "log";
+        div.textContent = l;
+
+        logPanel.appendChild(div);
+
+    });
+
+}
+
+// Initial render
 renderAssets();
 
 </script>
