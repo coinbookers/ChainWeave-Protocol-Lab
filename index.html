@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ChainWeave Protocol Lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0a0f1f;
+    color:#e2e8f0;
+}
+
+header{
+    padding:15px;
+    text-align:center;
+    background:#111827;
+    font-weight:bold;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    height:calc(100vh - 50px);
+}
+
+.left{
+    padding:15px;
+    background:#0f172a;
+    border-right:1px solid #1f2937;
+}
+
+.right{
+    padding:15px;
+    overflow:auto;
+}
+
+button, input{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border:none;
+    border-radius:6px;
+}
+
+button{
+    cursor:pointer;
+    background:#3b82f6;
+    color:white;
+}
+
+button:hover{
+    background:#2563eb;
+}
+
+.card{
+    margin-top:10px;
+    padding:10px;
+    background:#111827;
+    border-left:4px solid #3b82f6;
+    border-radius:6px;
+}
+
+.log{
+    font-family:monospace;
+    font-size:13px;
+    padding:6px;
+    margin-bottom:6px;
+    background:#0f172a;
+    border-left:3px solid #38bdf8;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>ChainWeave Protocol Lab</header>
+
+<div class="grid">
+
+<div class="left">
+<h3>Asset Generator</h3>
+
+<input id="assetName" placeholder="Asset name">
+<input id="assetType" placeholder="Type (NFT / Token / Coin)">
+
+<button onclick="createAsset()">Create Asset</button>
+<button onclick="runMining()">Run Mining Cycle</button>
+<button onclick="resetLab()">Reset Lab</button>
+
+<div id="assetPanel"></div>
+</div>
+
+<div class="right">
+<h3>System Log</h3>
+<div id="logPanel"></div>
+</div>
+
+</div>
+
+<script>
+
+// Core simulation state
+const labState = {
+    assets: [],
+    logs: [],
+    minedBlocks: 0
+};
+
+// Logging utility
+function addLog(message){
+    labState.logs.push(message);
+    renderLogs();
+}
+
+// Create new asset (NFT / Token / Coin)
+function createAsset(){
+
+    const name = document.getElementById("assetName").value.trim();
+    const type = document.getElementById("assetType").value.trim();
+
+    if(!name || !type){
+        alert("Fill all fields");
+        return;
+    }
+
+    labState.assets.push({
+        id: labState.assets.length + 1,
+        name:name,
+        type:type,
+        status:"unconfirmed"
+    });
+
+    addLog("Asset created: " + name);
+
+    document.getElementById("assetName").value = "";
+    document.getElementById("assetType").value = "";
+
+    renderAssets();
+}
+
+// Simulate mining process
+function runMining(){
+
+    labState.assets.forEach(asset => {
+
+        if(asset.status === "unconfirmed"){
+            asset.status = "mined";
+            labState.minedBlocks++;
+            addLog("Mining completed for asset #" + asset.id);
+        }
+
+    });
+
+    renderAssets();
+}
+
+// Reset system
+function resetLab(){
+
+    labState.assets = [];
+    labState.logs = [];
+    labState.minedBlocks = 0;
+
+    addLog("Protocol reset initiated");
+
+    renderAssets();
+}
+
+// Render asset panel
+function renderAssets(){
+
+    const panel = document.getElementById("assetPanel");
+    panel.innerHTML = "";
+
+    labState.assets.forEach(asset => {
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML =
+            "<strong>" + asset.name + "</strong><br>" +
+            "Type: " + asset.type + "<br>" +
+            "Status: " + asset.status;
+
+        panel.appendChild(div);
+
+    });
+
+}
+
+// Render logs
+function renderLogs(){
+
+    const logPanel = document.getElementById("logPanel");
+    logPanel.innerHTML = "";
+
+renderAssets();
+
+</script>
+
+</body>
+</html>
